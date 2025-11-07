@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "env0-agent.fullname" . }}-test"
+  labels:
+    {{- include "env0-agent.labels" . | nindent 4 }}
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    - name: echo
+      image: busybox:1.36
+      command: ['sh', '-c', 'echo env0 agent chart installed']
