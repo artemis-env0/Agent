@@ -1,0 +1,14 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Status:
+  kubectl -n {{ .Release.Namespace }} get deploy {{ include "env0-agent.fullname" . }} -o wide
+  kubectl -n {{ .Release.Namespace }} get pods -l app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name={{ include "env0-agent.name" . }}
+
+Logs:
+  kubectl -n {{ .Release.Namespace }} logs deploy/{{ include "env0-agent.fullname" . }} -f
+
+Agent credentials:
+  - If agent.createSecret=true, a Secret "{{ include "env0-agent.fullname" . }}-creds" was created.
+  - Otherwise, ensure .Values.agent.existingSecret points to a Secret with keys: AGENT_KEY and AGENT_SECRET.
+
+If using a private registry, set imagePullSecrets in values.yaml.

@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "env0-agent.fullname" . }}
+  labels:
+    {{- include "env0-agent.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "env0-agent.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "env0-agent.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ if .Values.serviceAccount.create }}{{ default (include "env0-agent.fullname" .) .Values.serviceAccount.name }}{{ else }}{{ default "default" .Values.serviceAccount.name }}{{ end }}
+      {{- if .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.agent.initContainers }}
+      initContainers:
+        {{- toYaml .Values.agent.initContainers | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: env0-agent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.agent.command }}
+          command: {{- toYaml .Values.agent.command | nindent 10 }}
+          {{- end }}
+          {{- if .Values.agent.args }}
+          args: {{- toYaml .Values.agent.args | nindent 10 }}
+          {{- end }}
+          {{- if .Values.securityContext }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
+          env:
+            - name: AGENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.agent.existingSecret }}{{ .Values.agent.existingSecret }}{{ else }}{{ include "env0-agent.fullname" . }}-creds{{ end }}
+                  key: AGENT_KEY
+            - name: AGENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.agent.existingSecret }}{{ .Values.agent.existingSecret }}{{ else }}{{ include "env0-agent.fullname" . }}-creds{{ end }}
+                  key: AGENT_SECRET
+            {{- if .Values.agent.proxy.enabled }}
+            - name: HTTP_PROXY
+              value: "{{ .Values.agent.proxy.httpProxy }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.agent.proxy.httpsProxy }}"
+            - name: NO_PROXY
+              value: "{{ .Values.agent.proxy.noProxy }}"
+            {{- end }}
+            {{- if and .Values.agent.caBundle.enabled .Values.agent.caBundle.setEnvVars }}
+            - name: SSL_CERT_FILE
+              value: "{{ .Values.agent.caBundle.mountPath }}/{{ .Values.agent.caBundle.fileName }}"
+            - name: REQUESTS_CA_BUNDLE
+              value: "{{ .Values.agent.caBundle.mountPath }}/{{ .Values.agent.caBundle.fileName }}"
+            - name: CURL_CA_BUNDLE
+              value: "{{ .Values.agent.caBundle.mountPath }}/{{ .Values.agent.caBundle.fileName }}"
+            - name: GIT_SSL_CAINFO
+              value: "{{ .Values.agent.caBundle.mountPath }}/{{ .Values.agent.caBundle.fileName }}"
+            - name: PIP_CERT
+              value: "{{ .Values.agent.caBundle.mountPath }}/{{ .Values.agent.caBundle.fileName }}"
+            {{- end }}
+            {{- if .Values.agent.extraEnv }}
+            {{- toYaml .Values.agent.extraEnv | nindent 12 }}
+            {{- end }}
+          {{- if .Values.agent.envFrom }}
+          envFrom:
+            {{- toYaml .Values.agent.envFrom | nindent 12 }}
+          {{- end }}
+          {{- if .Values.probes.enabled }}
+          {{- if eq .Values.probes.type "http" }}
+          ports:
+            - name: {{ .Values.probes.http.portName }}
+              containerPort: {{ .Values.service.port }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.http.path }}
+              port: {{ .Values.probes.http.portName }}
+            initialDelaySeconds: {{ .Values.probes.http.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.http.periodSeconds }}
+            failureThreshold: {{ .Values.probes.http.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.http.path }}
+              port: {{ .Values.probes.http.portName }}
+            initialDelaySeconds: {{ .Values.probes.http.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.http.periodSeconds }}
+            failureThreshold: {{ .Values.probes.http.failureThreshold }}
+          {{- else }}
+          livenessProbe:
+            exec:
+              command: {{- toYaml .Values.probes.exec.command | nindent 14 }}
+            initialDelaySeconds: {{ .Values.probes.exec.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.exec.periodSeconds }}
+            failureThreshold: {{ .Values.probes.exec.failureThreshold }}
+          readinessProbe:
+            exec:
+              command: {{- toYaml .Values.probes.exec.command | nindent 14 }}
+            initialDelaySeconds: {{ .Values.probes.exec.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.exec.periodSeconds }}
+            failureThreshold: {{ .Values.probes.exec.failureThreshold }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- if and .Values.agent.caBundle.enabled .Values.agent.caBundle.secretName }}
+            - name: cabundle
+              mountPath: {{ .Values.agent.caBundle.mountPath }}
+              readOnly: true
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if and .Values.agent.caBundle.enabled .Values.agent.caBundle.secretName }}
+        - name: cabundle
+          secret:
+            secretName: {{ .Values.agent.caBundle.secretName }}
+            items:
+              - key: {{ .Values.agent.caBundle.fileName }}
+                path: {{ .Values.agent.caBundle.fileName }}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}

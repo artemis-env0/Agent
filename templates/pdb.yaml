@@ -1,0 +1,14 @@
+{{- if .Values.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "env0-agent.fullname" . }}
+  labels:
+    {{- include "env0-agent.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "env0-agent.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
