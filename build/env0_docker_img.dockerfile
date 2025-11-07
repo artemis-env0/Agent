@@ -12,7 +12,7 @@
 # --------------------------------------------------------------------------------------
 # Base: env0 deployment agent
 # -----------------------------------------------------------------------------
-ARG AGENT_VERSION=4.0.0
+ARG AGENT_VERSION=4.0.16
 FROM --platform=linux/amd64 ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
 # Become root once for all installation steps; drop privileges at the end.
