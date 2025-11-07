@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "tag"
+      ]
+    },
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "createSecret": {
+          "type": "boolean"
+        },
+        "existingSecret": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "string"
+        },
+        "extraEnv": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "command": {
+          "type": "array"
+        },
+        "args": {
+          "type": "array"
+        },
+        "proxy": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "httpProxy": {
+              "type": "string"
+            },
+            "httpsProxy": {
+              "type": "string"
+            },
+            "noProxy": {
+              "type": "string"
+            }
+          }
+        },
+        "caBundle": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "secretName": {
+              "type": "string"
+            },
+            "mountPath": {
+              "type": "string"
+            },
+            "fileName": {
+              "type": "string"
+            },
+            "setEnvVars": {
+              "type": "boolean"
+            }
+          }
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "sidecars": {
+          "type": "array"
+        }
+      }
+    },
+    "probes": {
+      "type": "object"
+    },
+    "service": {
+      "type": "object"
+    },
+    "ingress": {
+      "type": "object"
+    },
+    "pdb": {
+      "type": "object"
+    },
+    "autoscaling": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: env0-agent
+description: Fully fledged Helm chart to deploy the env0 Agent with custom image & configuration
+type: application
+version: 0.2.0
+appVersion: "latest"
+keywords:
+  - env0
+  - deployment-agent
+  - ci
+  - infrastructure
+home: https://docs.envzero.com/guides/admin-guide/self-hosted-kubernetes-agent
+sources:
+  - https://github.com/env0/agent-helm-chart
+maintainers:
+  - name: you
+    email: you@ucla.edu

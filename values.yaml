@@ -1,0 +1,170 @@
+# Custom helm value aga v4.0.14 | artem@env0
+#--------------------------------------------------------------------------------------------------------------------
+# Image
+# --------------------------------------------------------------------------------------------------------------------
+image:
+  # -- Custom image built from your Dockerfile (set your actual registry/repo)
+  repository: ghcr.io/your-org/env0-agent-custom
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# -- Optional imagePullSecrets for private registries
+imagePullSecrets: []
+# - name: regcred
+
+# --------------------------------------------------------------------------------------------------------------------
+# Deployment
+# --------------------------------------------------------------------------------------------------------------------
+replicaCount: 1
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
+# Override names
+nameOverride: ""
+fullnameOverride: ""
+
+# Node scheduling (default to amd64 since your Dockerfile enforces x86_64)
+nodeSelector:
+  kubernetes.io/arch: amd64
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+priorityClassName: ""
+
+# Pod labels/annotations
+podLabels: {}
+podAnnotations: {}
+
+# Security contexts
+podSecurityContext: {}
+#  fsGroup: 65532
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  # readOnlyRootFilesystem: true  # enable if your workflows allow
+
+# Resources
+resources: {}
+#  requests:
+#    cpu: 100m
+#    memory: 256Mi
+#  limits:
+#    cpu: 1000m
+#    memory: 1Gi
+
+# --------------------------------------------------------------------------------------------------------------------
+# ServiceAccount & RBAC
+# --------------------------------------------------------------------------------------------------------------------
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountToken: true
+
+rbac:
+  create: false
+  # Provide custom rules when create=true. Defaults are minimal.
+  rules: []
+  # - apiGroups: [""]
+  #   resources: ["pods"]
+  #   verbs: ["get", "list"]
+
+# --------------------------------------------------------------------------------------------------------------------
+# Agent configuration
+# --------------------------------------------------------------------------------------------------------------------
+agent:
+  # Credentials: either provide key/secret to auto-create a Secret, or point to an existing Secret.
+  createSecret: true
+  existingSecret: ""
+  key: ""
+  secret: ""
+
+  # Additional env/secret/envFrom for advanced wiring (cloud creds, proxies, etc.)
+  extraEnv: []
+  envFrom: []
+  #  - secretRef:
+  #      name: aws-credentials
+
+  # Optional override for container entrypoint/args
+  command: []
+  args: []
+
+  # Proxy support (sets standard proxy envs when enabled)
+  proxy:
+    enabled: false
+    httpProxy: ""
+    httpsProxy: ""
+    noProxy: ""
+
+  # Optional CA bundle injection (your image already bakes CA; use this only if you want runtime override)
+  caBundle:
+    enabled: false
+    secretName: ""
+    mountPath: /etc/custom-ca
+    fileName: ca.crt
+    setEnvVars: true  # set SSL_CERT_FILE/REQUESTS_CA_BUNDLE/CURL_CA_BUNDLE/GIT_SSL_CAINFO/PIP_CERT
+
+  # Init containers / sidecars (advanced)
+  initContainers: []
+  sidecars: []
+
+# --------------------------------------------------------------------------------------------------------------------
+# Probes
+# (Our [env0] agent typically doesn't expose HTTP health endpoints; kept disabled by default)
+# Enable either http or exec probes if you have a custom endpoint/command.
+# --------------------------------------------------------------------------------------------------------------------
+probes:
+  enabled: false
+  type: http # http|exec
+  http:
+    portName: http
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    failureThreshold: 3
+  exec:
+    command: ["sh", "-c", "echo ok"]
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    failureThreshold: 3
+
+# Optional service (usually unnecessary for agents)
+service:
+  enabled: false
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+  labels: {}
+
+# Ingress (off by default)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+
+# PodDisruptionBudget
+pdb:
+  enabled: false
+  minAvailable: 1
+
+# Autoscaling (HPA)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: null
+
+# Extra volumes
+extraVolumes: []
+extraVolumeMounts: []
