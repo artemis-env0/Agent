@@ -35,6 +35,10 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 
 Download Helm Installation Script v1106-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/1106-25/deploy_env0_helm.sh) 
 
+## env0 Agent - Dockerimage 
+
+Download Docker Image DF-v4.0.16a:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/1106-25/env0_docker_img.dockerfile) 
+
 ## Values
 
 See [`values.yaml`](./values.yaml) for all available options with comments. Schema validation via `values.schema.json`.
