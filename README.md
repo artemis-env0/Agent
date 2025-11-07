@@ -3,7 +3,7 @@
 This chart deploys the env0 agent using your custom image and aligns with the official env0 agent configuration.
 
 ## Quickstart
-
+### Installation (Script)
 ```bash
 # Create namespace
 kubectl create ns env0
