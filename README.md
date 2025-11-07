@@ -32,7 +32,8 @@ kubectl -n env0 get pods
 kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
-<a href="/bin/deploy_env0_helm.sh?raw=1">Download deploy_env0_helm.sh</a>
+
+Download the install script: [deploy_env0_helm.sh](https://raw.githubusercontent.com/artemis-env0/Agent/refs/heads/main/bin/deploy_env0_helm.sh).
 
 ## Values
 
