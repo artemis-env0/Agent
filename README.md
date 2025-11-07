@@ -3,7 +3,7 @@
 This chart deploys the env0 agent using your custom image and aligns with the official env0 agent configuration.
 
 ## Quickstart
-### Installation (Script)
+
 ```bash
 # Create namespace
 kubectl create ns env0
@@ -33,7 +33,7 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
 
-Download the install script: [Download deploy_env0_helm.sh](https://github.com/artemis-env0/Agent/releases/latest/download/deploy_env0_helm.sh).
+Download Helm Installation Script v1106-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/1106-25/deploy_env0_helm.sh) 
 
 ## Values
 
