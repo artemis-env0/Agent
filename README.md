@@ -32,7 +32,7 @@ kubectl -n env0 get pods
 kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
-Download Install Script [`deploy_env0_helm.sh`](/bin/deploy_env0_helm.sh) fully backed and ready `deploy_env0_helm.sh`.
+Download the install script: [deploy_env0_helm.sh](/bin/deploy_env0_helm.sh?raw=1).
 
 ## Values
 
