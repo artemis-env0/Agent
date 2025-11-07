@@ -33,7 +33,7 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
 
-Download the install script: [deploy_env0_helm.sh](https://raw.githubusercontent.com/artemis-env0/Agent/refs/heads/main/bin/deploy_env0_helm.sh).
+Download the install script: [Download deploy_env0_helm.sh](https://github.com/artemis-env0/Agent/releases/latest/download/deploy_env0_helm.sh).
 
 ## Values
 
