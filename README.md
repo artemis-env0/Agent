@@ -31,6 +31,8 @@ helm upgrade --install env0-agent ./ -n env0 --create-namespace -f my-values.yam
 kubectl -n env0 get pods
 kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
+---
+Download Install Script [`deploy_env0_helm.sh`](/bin/deploy_env0_helm.sh) fully backed and ready `deploy_env0_helm.sh`.
 
 ## Values
 
