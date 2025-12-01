@@ -4,11 +4,11 @@
 
 ---
 
-# EnvZero (env0) Agent Helm Chart (Custom)
+## EnvZero (env0) Agent Helm Chart (Custom)
 
 This chart deploys the env0 agent using your custom image and aligns with the official env0 agent configuration.
 
-## Quickstart
+### Quickstart
 
 ```bash
 # Create namespace
