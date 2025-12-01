@@ -1,16 +1,16 @@
 # =============================================================================================
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.3
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.3Lg [Latest Greatest]
 #  - Based on env0/deployment-agent
 #      - linux/amd64 only
 #      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34a
 #  - Preserves your original flow
-#  - Installs kubectl v1.33.4
+#  - Installs kubectl v1.34.2
 #  - Installs pwsh 7.5.4
 #  - Corporate CA trust wired
 #  - Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
 #  - AWS CLI + Azure CLI + extras
-#  - OPA (Open Policy Agent) v1.10.1
-#  - Vulnerability Patch v.2025.12.01
+#  - OPA (Open Policy Agent) v1.11.0
+#  - Vulnerability Patch v.2025.12.01 > artem@env0
 # =============================================================================================
 
 ARG AGENT_VERSION=4.0.34
@@ -53,7 +53,7 @@ RUN set -eux; \
 # -----------------------------------------------------------------------------
 # kubectl (AMD64)
 # -----------------------------------------------------------------------------
-ARG KUBECTL_VERSION=v1.33.4
+ARG KUBECTL_VERSION=v1.34.2
 RUN set -eux; \
     curl -fsSL -o /usr/local/bin/kubectl \
       "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
@@ -110,7 +110,7 @@ ENV PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
 # -----------------------------------------------------------------------------
 # AWS CLI
 # -----------------------------------------------------------------------------
-RUN pip3 install --no-cache-dir "awscli==1.32.65"
+RUN pip3 install --no-cache-dir "awscli==1.43.6"
 
 # -----------------------------------------------------------------------------
 # Azure CLI
@@ -130,7 +130,7 @@ RUN set -eux; \
 #  ----------------------------------------------------------------------------
 # | Open Policy Agent (OPA): pinned, checksum-verified (linux/amd64 only)
 #  ----------------------------------------------------------------------------
-ARG OPA_VERSION=1.10.1
+ARG OPA_VERSION=1.11.0
 USER root
 RUN arch="$(uname -m)"; \
     [ "$arch" = "x86_64" ] || { echo "OPA requires linux/amd64 (got $arch)"; exit 1; }; \
