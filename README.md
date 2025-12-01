@@ -1,7 +1,7 @@
 <h3 align="center">
   <img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9" />
 </h3>
-----
+---
 
 # EnvZero (env0) Agent Helm Chart (Custom)
 
