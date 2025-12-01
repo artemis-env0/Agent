@@ -37,8 +37,8 @@ Download Helm Installation Script v1106-25:  [`deploy_env0_helm`](https://github
 
 ## env0 Agent - Dockerfile
 
-- [<img width="14" height="14" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> **Download DockerFile DF-v4.0.34a std:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img.dockerfile) 
-- [<img width="14" height="14" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> **Download DockerFile DF-v4.0.34a LG:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img_lg.dockerfile) 
+- <img width="14" height="14" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> **Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a STD (Standard):  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img.dockerfile) 
+- <img width="14" height="14" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> **Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a LG (Latest Greatest):  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img_lg.dockerfile) 
 
 ## Values
 
