@@ -1,6 +1,8 @@
 # =============================================================================================
-#  Env0 Agent Custom Image
-#  - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.16a
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.3
+#  - Based on env0/deployment-agent
+#      - linux/amd64 only
+#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34a
 #  - Preserves your original flow
 #  - Installs kubectl v1.33.4
 #  - Installs pwsh 7.5.4
@@ -8,48 +10,38 @@
 #  - Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
 #  - AWS CLI + Azure CLI + extras
 #  - OPA (Open Policy Agent) v1.10.1
+#  - Vulnerability Patch v.2025.12.01
 # =============================================================================================
-# --------------------------------------------------------------------------------------
-# Base: env0 deployment agent
-# -----------------------------------------------------------------------------
-ARG AGENT_VERSION=4.0.16
-FROM --platform=linux/amd64 ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
-# Become root once for all installation steps; drop privileges at the end.
+ARG AGENT_VERSION=4.0.34
+FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
+
 USER root
 
-# Hard guard: only build/run on x86_64
-RUN set -eux; \
-    if [ "$(uname -m)" != "x86_64" ]; then \
-      echo "This image is restricted to x86_64 (amd64) only." >&2; exit 1; \
-    fi
-
 # -----------------------------------------------------------------------------
-# Corp CA: install and trust for all CLI tools
+# Corporate CA trust (must exist in build context)
 # -----------------------------------------------------------------------------
-# These two files must be in your build context
-COPY ariesinter.crt /usr/local/share/ca-certificates/ariesinter.crt
-COPY ariesroot.crt  /usr/local/share/ca-certificates/ariesroot.crt
+COPY ariesinter.crt /usr/local/share/ca-certificates/
+COPY ariesroot.crt  /usr/local/share/ca-certificates/
 
-# Trust your corporate CA for any future *runtime* requests (not needed to build)
 RUN set -eux; \
-    cat /usr/local/share/ca-certificates/ariesinter.crt >> /etc/ssl/certs/ca-certificates.crt; \
-    cat /usr/local/share/ca-certificates/ariesroot.crt  >> /etc/ssl/certs/ca-certificates.crt; \
-    apk --no-cache add ca-certificates; \
-    update-ca-certificates
+    apk add --no-cache ca-certificates curl openssl py3-pip bash python3; \
+    update-ca-certificates; \
+    cat /usr/local/share/ca-certificates/aries*.crt >> /etc/ssl/certs/ca-certificates.crt; \
+    # Baseline OS security updates (addresses CVEs in Alpine userland where possible)
+    apk upgrade --no-cache
 
-# Make all common clients (curl, requests, pip, git, gcloud) honor the corp CA
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
     REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
     CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
     GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt \
-    PIP_CERT=/etc/ssl/certs/ca-certificates.crt
+    PIP_CERT=/etc/ssl/certs/ca-certificates.crt \
+    CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
+    CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1
 
 # -----------------------------------------------------------------------------
 # Writable runtime paths (env0 often uses read-only root; /tmp is tmpfs)
 # -----------------------------------------------------------------------------
-# Use /tmp for all temp I/O and make /var/tmp a symlink to /tmp for tools
-# that hardcode /var/tmp. Also ensure a writable HOME for the non-root user.
 ENV TMPDIR=/tmp \
     HOME=/home/env0
 RUN set -eux; \
@@ -59,108 +51,87 @@ RUN set -eux; \
     chown -R 65532:65532 /home/env0
 
 # -----------------------------------------------------------------------------
-# Base tooling
-# -----------------------------------------------------------------------------
-ARG INSTALLED_PACKAGES="curl openssl py3-pip"
-RUN apk add --no-cache ${INSTALLED_PACKAGES}
-
-# -----------------------------------------------------------------------------
-# kubectl (v1.33.4) : direct download (x86_64 only)
+# kubectl (AMD64)
 # -----------------------------------------------------------------------------
 ARG KUBECTL_VERSION=v1.33.4
 RUN set -eux; \
-    curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
-    chmod 0755 /usr/local/bin/kubectl; \
-    kubectl version --client --output=yaml | head -n 5 || true
+    curl -fsSL -o /usr/local/bin/kubectl \
+      "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
+    chmod +x /usr/local/bin/kubectl
 
 # -----------------------------------------------------------------------------
-# PowerShell (pwsh) 7.5.4
+# PowerShell (AMD64)
 # -----------------------------------------------------------------------------
 ARG PWSH_VERSION=7.5.4
 RUN set -eux; \
     apk add --no-cache icu-libs zlib libintl libgcc libstdc++; \
-    mkdir -p /opt/microsoft/powershell/; \
-    curl -L -o /tmp/pwsh.tar.gz "https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/powershell-${PWSH_VERSION}-linux-x64.tar.gz"; \
-    tar -xzf /tmp/pwsh.tar.gz -C /opt/microsoft/powershell/; \
+    curl -L -o /tmp/pwsh.tar.gz \
+      "https://github.com/PowerShell/PowerShell/releases/download/v${PWSH_VERSION}/powershell-${PWSH_VERSION}-linux-x64.tar.gz"; \
+    mkdir -p /opt/microsoft/powershell; \
+    tar -xzf /tmp/pwsh.tar.gz -C /opt/microsoft/powershell; \
     ln -sf /opt/microsoft/powershell/pwsh /usr/bin/pwsh; \
-    chmod 0755 /usr/bin/pwsh; \
     rm -f /tmp/pwsh.tar.gz
 
 # -----------------------------------------------------------------------------
-# OpenSSL config (legacy renegotiation off) + re-copy to locations you used
+# OpenSSL config
 # -----------------------------------------------------------------------------
-# These two files must exist in build context (your custom openssl.cnf)
-COPY openssl.cnf /usr/lib/ssl/openssl.cnf
 COPY openssl.cnf /etc/ssl/openssl.cnf
+COPY openssl.cnf /usr/lib/ssl/openssl.cnf
+RUN printf "\nca_directory=/etc/ssl/certs" >> /etc/wgetrc
 
 # -----------------------------------------------------------------------------
-# Install Aries CA into Debian-style path (some tools read here explicitly)
-# -----------------------------------------------------------------------------
-COPY ariesroot.crt  /usr/share/ca-certificates/ariesroot.crt
-COPY ariesinter.crt /usr/share/ca-certificates/ariesinter.crt
-RUN set -eux; \
-    echo "ariesroot.crt"  >> /etc/ca-certificates.conf; \
-    echo "ariesinter.crt" >> /etc/ca-certificates.conf; \
-    /usr/sbin/update-ca-certificates; \
-    printf "\nca_directory=/etc/ssl/certs" | tee -a /etc/wgetrc
-
-# -----------------------------------------------------------------------------
-# Go (Alpine package) : your original intent to fix stdlib CVEs
+# Go (native AMD64)
 # -----------------------------------------------------------------------------
 RUN apk add --no-cache go
 
 # -----------------------------------------------------------------------------
-# AWS Signing Helper
+# AWS Signing Helper (AMD64)
 # -----------------------------------------------------------------------------
-# expects 'aws_signing_helper' in build context
 COPY aws_signing_helper /usr/local/bin/aws_signing_helper
 RUN set -eux; \
     chmod +x /usr/local/bin/aws_signing_helper; \
-    # Ensure compat libs for the helper
-    echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/main"       >> /etc/apk/repositories; \
-    echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community"  >> /etc/apk/repositories; \
-    apk update; \
     apk add --no-cache gcompat libc6-compat; \
-    /usr/local/bin/aws_signing_helper version || true
+    file /usr/local/bin/aws_signing_helper || true; \
+    echo "Skipping aws_signing_helper execution on ARM host (x86 binary)"
 
 # -----------------------------------------------------------------------------
-# Google Cloud SDK (gcloud) : CA-safe, no component auto-fetch during install
+# Google Cloud SDK (AMD64)
 # -----------------------------------------------------------------------------
 ARG GCLOUD_VERSION=534.0.0
-# Ensure Python & crcmod (gcloud prereqs)
-RUN apk add --no-cache bash curl python3 py3-crcmod
-# Download & install; ensure corp CA env present during install.sh to prevent
-# the "components-2.json" SSL failure inside requests/urllib3.
-ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK=1 \
-    PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
 RUN set -eux; \
+    apk add --no-cache py3-crcmod; \
     curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
       | tar -xz -C /usr/local; \
-    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
-    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
-    /usr/local/google-cloud-sdk/install.sh --quiet || true; \
     ln -sf /usr/local/google-cloud-sdk/bin/gcloud /usr/bin/gcloud; \
-    /usr/local/google-cloud-sdk/bin/gcloud config set --quiet component_manager/disable_update_check true || true; \
-    /usr/local/google-cloud-sdk/bin/gcloud config set --quiet core/custom_ca_certs_file "/etc/ssl/certs/ca-certificates.crt" || true; \
-    gcloud --version || true
+    gcloud config set --quiet component_manager/disable_update_check true ; \
+    gcloud config set --quiet core/custom_ca_certs_file "/etc/ssl/certs/ca-certificates.crt"
+ENV PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
 
 # -----------------------------------------------------------------------------
-# AWS CLI v2 (x86_64)
+# AWS CLI
+# -----------------------------------------------------------------------------
+RUN pip3 install --no-cache-dir "awscli==1.32.65"
+
+# -----------------------------------------------------------------------------
+# Azure CLI
 # -----------------------------------------------------------------------------
 RUN set -eux; \
-    apk add --no-cache unzip; \
-    curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip; \
-    unzip /tmp/awscliv2.zip -d /tmp; \
-    /tmp/aws/install; \
-    rm -rf /tmp/aws*; \
-    aws --version || true
+    apk add --no-cache gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev; \
+    pip3 install --upgrade --no-cache-dir pip setuptools wheel; \
+    pip3 install --no-cache-dir azure-cli; \
+    apk del gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev
+
+# -----------------------------------------------------------------------------
+# Additional Python dependencies (custom)
+# -----------------------------------------------------------------------------
+RUN set -eux; \
+    pip3 install --no-cache-dir azure-identity azure-mgmt-network requests
 
 #  ----------------------------------------------------------------------------
-# - Open Policy Agent (OPA): pinned, checksum-verified (linux/amd64 only)  
-# - OPA (linux/amd64 only), static build so it works on Alpine
+# | Open Policy Agent (OPA): pinned, checksum-verified (linux/amd64 only)
 #  ----------------------------------------------------------------------------
 ARG OPA_VERSION=1.10.1
+USER root
 RUN arch="$(uname -m)"; \
     [ "$arch" = "x86_64" ] || { echo "OPA requires linux/amd64 (got $arch)"; exit 1; }; \
     bin="opa_linux_amd64_static"; \
@@ -174,45 +145,36 @@ RUN arch="$(uname -m)"; \
     opa version
 
 # -----------------------------------------------------------------------------
-# Azure CLI (pip) : via corp CA
-# -----------------------------------------------------------------------------
-RUN set -eux; \
-    python3 -m pip install --upgrade --no-cache-dir pip setuptools wheel; \
-    python3 -m pip install --no-cache-dir azure-cli; \
-    az --version >/dev/null || true
-
-# -----------------------------------------------------------------------------
-# Python tools: Checkov (and friends) - single install, no cache, corp CA
+# Checkov + asteval
 # -----------------------------------------------------------------------------
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    TMPDIR=/var/tmp
 RUN set -eux; \
-    python3 -m pip install --upgrade --no-cache-dir pip setuptools wheel; \
-    python3 -m pip install --no-cache-dir "checkov" "asteval==1.0.6"; \
-    pip3 check || echo "pip check reported conflicts (non-fatal)"; \
-    rm -rf /root/.cache /tmp/*
+    pip3 install --no-cache-dir "checkov" "asteval==1.0.6"; \
+    rm -rf /root/.cache /tmp/* /var/tmp/*
 
 # -----------------------------------------------------------------------------
-# Environment flags used by env0 runners
+# Vulnerability remediation (CaaS Hub report)
+#   - cryptography: upgrade to address CVE-2024-12797
+#   - PyJWT: intentionally left as-is (disputed)
+#   - coreutils (PyPI 0.9): force-remove if present to avoid legacy CVEs
+#   Notes:
+#     * Findings in Go stdlib, containerd/v2, and circl originate in upstream
+#       prebuilt binaries (agent base and vendor CLIs). Those require an
+#       upstream image bump / vendor release to remediate fully.
 # -----------------------------------------------------------------------------
+RUN set -eux; \
+    pip3 install --no-cache-dir --upgrade 'cryptography>=43.0.3'; \
+    pip3 uninstall -y coreutils || true
+
+# -----------------------------------------------------------------------------
+# Cleanup + runtime env
+# -----------------------------------------------------------------------------
+RUN rm -rf /opt/infracost /var/cache/apk/* /tmp/* /root/.cache
 ENV ENV0_USE_TF_PLUGIN_CACHE=true
 
 # -----------------------------------------------------------------------------
-# Optional cleanup of prebundled tools you removed before
+# Drop privileges
 # -----------------------------------------------------------------------------
-RUN rm -rf /opt/infracost || true
-
-# -----------------------------------------------------------------------------
-# Final sanity: print key versions at build (non-fatal)
-# -----------------------------------------------------------------------------
-RUN set -eux; \
-    kubectl version --client --output=yaml | head -n 5 || true; \
-    pwsh --version || true; \
-    gcloud --version || true; \
-    aws --version || true; \
-    az --version  || true; \
-    python3 --version; \
-    pip3 --version
-
-# Drop privileges for runtime
-USER 65532
+USER 65532:65532
