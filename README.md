@@ -1,14 +1,14 @@
-<h3 align="center">
-  <img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9" />
+<h3 align="left">
+  <img width="600" height="128" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/01%20Main%20Logo/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/>
 </h3>
 
 ---
 
-# EnvZero (env0) Agent Helm Chart (Custom)
+## EnvZero (env0) Agent Helm Chart (Custom)
 
 This chart deploys the env0 agent using your custom image and aligns with the official env0 agent configuration.
 
-## Quickstart
+### Quickstart
 
 ```bash
 # Create namespace
@@ -43,8 +43,8 @@ Download Helm Installation Script v1106-25:  [`deploy_env0_helm`](https://github
 
 ## env0 Agent - Dockerfile
 
-- <img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img.dockerfile) 
-- <img width="16" height="16" alt="image" src="https://github.com/user-attachments/assets/e2ca24e2-8289-4001-879f-81c40a8a4df9"/> Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a Latest Greatest:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img_lg.dockerfile) 
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img.dockerfile) 
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 Self-Hosted Agent Dockerfile DF-v4.0.34a Latest Greatest:  [`env0_docker_img_lg.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34a/env0_docker_img_lg.dockerfile) 
 
 ## Values
 
