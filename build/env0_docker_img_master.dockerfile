@@ -2,7 +2,7 @@
 #  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.4
 #  - Based on env0/deployment-agent
 #      - linux/amd64 only
-#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34a
+#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34b
 #  - Preserves your original flow
 #  - Installs kubectl v1.34.1
 #  - Installs pwsh 7.5.4
