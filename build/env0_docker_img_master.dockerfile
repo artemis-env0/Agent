@@ -3,7 +3,6 @@
 #  - Based on env0/deployment-agent
 #      - linux/amd64 only
 #      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34c
-#  - Preserves your original flow
 #  - Installs kubectl v1.34.2
 #  - Installs pwsh 7.5.4
 #  - Corporate CA trust wired
@@ -11,7 +10,7 @@
 #  - AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
 #  - Azure CLI pinned to latest documented version
 #  - OPA (Open Policy Agent) v1.11.0
-#  - Vulnerability Patch v.2025.12.03
+#  - Vulnerability Patch v.2025.12.08
 # └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.34
