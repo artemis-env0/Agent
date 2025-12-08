@@ -39,7 +39,7 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
 
-Download Helm Installation Script v1208-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/1208-25/deploy_env0_helm.sh) 
+Download Helm Installation Script v1208-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34c/deploy_env0_helm.sh) 
 
 ## env0 Agent - Dockerfile
 
