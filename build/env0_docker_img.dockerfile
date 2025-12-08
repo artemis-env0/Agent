@@ -1,7 +1,6 @@
 # =============================================================================================
 #  Env0 Agent Custom Image
 #  - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.16a
-#  - Preserves your original flow
 #  - Installs kubectl v1.33.4
 #  - Installs pwsh 7.5.4
 #  - Corporate CA trust wired
