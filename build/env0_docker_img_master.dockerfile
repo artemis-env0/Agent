@@ -10,7 +10,7 @@
 #  - AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
 #  - Azure CLI pinned to latest documented version
 #  - OPA (Open Policy Agent) v1.11.0
-#  - Vulnerability Patch v.2025.12.03
+#  - Vulnerability Patch v.2025.12.08
 # └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.34
