@@ -2,15 +2,15 @@
 #  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.4
 #  - Based on env0/deployment-agent
 #      - linux/amd64 only
-#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34b
+#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34c
 #  - Preserves your original flow
-#  - Installs kubectl v1.34.1
+#  - Installs kubectl v1.34.2
 #  - Installs pwsh 7.5.4
 #  - Corporate CA trust wired
 #  - Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
 #  - AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
 #  - Azure CLI pinned to latest documented version
-#  - OPA (Open Policy Agent) v1.10.1
+#  - OPA (Open Policy Agent) v1.11.0
 #  - Vulnerability Patch v.2025.12.03
 # └────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -54,7 +54,7 @@ RUN set -eux; \
 # ─────────────────────────────────────────────────────────────────────────────
 # kubectl (AMD64)
 # ─────────────────────────────────────────────────────────────────────────────
-ARG KUBECTL_VERSION=v1.34.1
+ARG KUBECTL_VERSION=v1.34.2
 RUN set -eux; \
     curl -fsSL -o /usr/local/bin/kubectl \
       "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
@@ -98,7 +98,7 @@ RUN set -eux; \
 # ─────────────────────────────────────────────────────────────────────────────
 # Google Cloud SDK (AMD64)
 # ─────────────────────────────────────────────────────────────────────────────
-ARG GCLOUD_VERSION=534.0.0
+ARG GCLOUD_VERSION=541.0.0
 RUN set -eux; \
     apk add --no-cache py3-crcmod; \
     curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
@@ -123,7 +123,7 @@ RUN set -eux; \
 # Azure CLI
 # ─────────────────────────────────────────────────────────────────────────────
 # Pin to latest documented release to pick up security fixes.
-ARG AZ_CLI_VERSION=2.81.0
+ARG AZ_CLI_VERSION=2.91.0
 RUN set -eux; \
     apk add --no-cache gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev; \
     pip3 install --upgrade --no-cache-dir pip setuptools wheel; \
@@ -139,7 +139,7 @@ RUN set -eux; \
 #  ----------------------------------------------------------------------------
 # | Open Policy Agent (OPA): pinned, checksum-verified (linux/amd64 only)
 #  ----------------------------------------------------------------------------
-ARG OPA_VERSION=1.10.1
+ARG OPA_VERSION=1.11.0
 USER root
 RUN arch="$(uname -m)"; \
     [ "$arch" = "x86_64" ] || { echo "OPA requires linux/amd64 (got $arch)"; exit 1; }; \
@@ -160,6 +160,10 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     TMPDIR=/var/tmp
 RUN set -eux; \
+    pip3 install --no-cache-dir --upgrade \
+      "pip>=25.3" "setuptools>=75.8.0" "wheel>=0.45.1" \
+      "requests>=2.32.3" "urllib3>=2.2.3" "idna>=3.7" "charset-normalizer>=3.3.2" "certifi>=2025.6.2" \
+      "pyyaml>=6.0.2" "cryptography>=43.0.3"; \
     pip3 install --no-cache-dir "checkov" "asteval==1.0.6"; \
     rm -rf /root/.cache /tmp/* /var/tmp/*
 
