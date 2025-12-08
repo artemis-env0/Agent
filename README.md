@@ -39,7 +39,7 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
 
-Download Helm Installation Script v1106-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/1106-25/deploy_env0_helm.sh) 
+Download Helm Installation Script v1208-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/1208-25/deploy_env0_helm.sh) 
 
 ## env0 Agent - Dockerfile
 
@@ -68,4 +68,4 @@ helm uninstall env0-agent -n env0
 This chart is built to be lint-friendly and portable across Kubernetes 1.23+.
 
 ## Contributor
-artem@env0 | v1201-25
+artem@env0 | v1208-25
