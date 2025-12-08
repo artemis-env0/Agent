@@ -3,7 +3,6 @@
 #  - Based on env0/deployment-agent
 #      - linux/amd64 only
 #      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34a
-#  - Preserves your original flow
 #  - Installs kubectl v1.34.1
 #  - Installs pwsh 7.5.4
 #  - Corporate CA trust wired
