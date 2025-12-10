@@ -1,17 +1,17 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.4
-#  - Based on env0/deployment-agent
-#      - linux/amd64 only
-#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34c
-#  - Installs kubectl v1.34.2
-#  - Installs pwsh 7.5.4
-#  - Corporate CA trust wired
-#  - Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
-#  - AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
-#  - Azure CLI pinned to latest documented version
-#  - OPA (Open Policy Agent) v1.11.0
-#  - Vulnerability Patch v.2025.12.08
-# └────────────────────────────────────────────────────────────────────────────────────────────
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.5
+#  |  Based on env0/deployment-agent
+#      |  linux/amd64 only
+#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34d
+#  |  Installs kubectl v1.34.2
+#  |  Installs pwsh 7.5.4
+#  |  Corporate CA trust wired
+#  |  Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
+#  |  AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
+#  |  Azure CLI pinned to 2.81.0
+#  |  OPA (Open Policy Agent) v1.11.0
+#  |  Vulnerability Patch v.2025.12.08
+#  └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.34
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
@@ -97,7 +97,7 @@ RUN set -eux; \
 # ─────────────────────────────────────────────────────────────────────────────
 # Google Cloud SDK (AMD64)
 # ─────────────────────────────────────────────────────────────────────────────
-ARG GCLOUD_VERSION=541.0.0
+ARG GCLOUD_VERSION=534.0.0
 RUN set -eux; \
     apk add --no-cache py3-crcmod; \
     curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
@@ -122,7 +122,7 @@ RUN set -eux; \
 # Azure CLI
 # ─────────────────────────────────────────────────────────────────────────────
 # Pin to latest documented release to pick up security fixes.
-ARG AZ_CLI_VERSION=2.91.0
+ARG AZ_CLI_VERSION=2.81.0
 RUN set -eux; \
     apk add --no-cache gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev; \
     pip3 install --upgrade --no-cache-dir pip setuptools wheel; \
@@ -159,10 +159,6 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     TMPDIR=/var/tmp
 RUN set -eux; \
-    pip3 install --no-cache-dir --upgrade \
-      "pip>=25.3" "setuptools>=75.8.0" "wheel>=0.45.1" \
-      "requests>=2.32.3" "urllib3>=2.2.3" "idna>=3.7" "charset-normalizer>=3.3.2" "certifi>=2025.6.2" \
-      "pyyaml>=6.0.2" "cryptography>=43.0.3"; \
     pip3 install --no-cache-dir "checkov" "asteval==1.0.6"; \
     rm -rf /root/.cache /tmp/* /var/tmp/*
 
