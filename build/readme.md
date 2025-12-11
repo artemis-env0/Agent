@@ -14,7 +14,7 @@
 
 | Component | Version | Install Method | Notes |
 |---|---:|---|---|
-| **Base (Env0 agent)** | `AGENT_VERSION=4.0.34` | `FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}` | Keep aligned with your Env0 Helm chart. |
+| **Base (Env0 agent)** | `AGENT_VERSION=4.0.44` | `FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}` | Keep aligned with your Env0 Helm chart. |
 | **kubectl** | **v1.34.2** | Direct AMD64 binary from `dl.k8s.io` | Current stable line with recent fixes. |
 | **PowerShell** | **7.5.4** | Official GitHub release tarball | Only minimal Alpine libs added (`icu-libs`, etc.). |
 | **Google Cloud SDK** | **549.0.0** | Tarball extract only (no `install.sh`) | Avoids installer’s extra network calls & component churn. |
@@ -31,7 +31,7 @@
 
 ```dockerfile
 # Base agent
-ARG AGENT_VERSION=4.0.34
+ARG AGENT_VERSION=4.0.44
 
 # kubectl
 ARG KUBECTL_VERSION=v1.34.2
@@ -91,7 +91,7 @@ PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 
 ```bash
 # From the Dockerfile directory:
-docker build   --build-arg AGENT_VERSION=4.0.34   --build-arg KUBECTL_VERSION=v1.34.2   --build-arg PWSH_VERSION=7.5.4   --build-arg GCLOUD_VERSION=549.0.0   --build-arg AZ_CLI_VERSION=2.81.0   --build-arg OPA_VERSION=1.11.1   -t your-registry/env0-agent:latest-safe .
+docker build   --build-arg AGENT_VERSION=4.0.44   --build-arg KUBECTL_VERSION=v1.34.2   --build-arg PWSH_VERSION=7.5.4   --build-arg GCLOUD_VERSION=549.0.0   --build-arg AZ_CLI_VERSION=2.81.0   --build-arg OPA_VERSION=1.11.1   -t your-registry/env0-agent:latest-safe .
 
 # Push if needed:
 docker push your-registry/env0-agent:latest-safe
@@ -113,9 +113,9 @@ docker push your-registry/env0-agent:latest-safe
 
 ### Download
 
-- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d LTSB:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_LTSB.dockerfile)
-- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_STD.dockerfile)
-- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Extended:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_EXT.dockerfile)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.44 LTSB:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.44/env0_docker_img_master_LTSB.dockerfile)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.44 Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.44/env0_docker_img_master_STD.dockerfile)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.44 Extended:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.44/env0_docker_img_master_EXT.dockerfile)
 
 -----
 
@@ -144,7 +144,7 @@ Keep a `CHANGELOG.md` mapping your image tags (e.g., `v2.2.x`) to the exact comp
 
 ```
 - v2.2.x (tag: latest-safe)
-  - Base: ghcr.io/env0/deployment-agent:4.0.34
+  - Base: ghcr.io/env0/deployment-agent:4.0.44
   - kubectl v1.34.2
   - PowerShell 7.5.4
   - gcloud 549.0.0
