@@ -10,6 +10,7 @@ This README documents the **latest-safe** Env0 agent image variant. It pins each
 
 --
 
+
 ## Contents (What’s in the image)
 
 | Component | Version | Install Method | Notes |
