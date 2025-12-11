@@ -138,7 +138,7 @@ docker push your-registry/env0-agent:latest-safe
 
 ---
 
-### Changelog template (optional)
+### Changelog template 
 
 Keep a `CHANGELOG.md` mapping your image tags (e.g., `v2.2.x`) to the exact component versions and scan outcomes.
 
