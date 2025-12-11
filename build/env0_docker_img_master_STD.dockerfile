@@ -1,5 +1,5 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.4 | Standard
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.5s | Standard
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
 #      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34d
