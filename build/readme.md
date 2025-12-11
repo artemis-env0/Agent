@@ -2,13 +2,13 @@
   <img width="600" height="128" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/01%20Main%20Logo/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/>
 </h3>
 
-----
+-----
 
 ## Env0 Agent Custom Dockerfile(s) Image (AMD64) :: Breakdown
 
 This README documents the **latest-safe** Env0 agent image variant. It pins each tool to specific versions and installs them with minimal dependencies to keep CaaS Hub / Aqua scans as close to zero as practicable.
 
------
+----
 
 ### Contents (What’s in the image)
 
@@ -25,7 +25,7 @@ This README documents the **latest-safe** Env0 agent image variant. It pins each
 | **Python deps** | Minimal | Targeted `pip` installs only | Smaller footprint :  fewer CVEs. |
 | **Runtime layout** | N/A | `/tmp` writable :  `/var/tmp` → `/tmp` | Works in read-only-root runtimes (Env0). |
 
----
+-----
 
 ### Where versions are set (in your Dockerfile)
 
@@ -53,7 +53,7 @@ ARG OPA_VERSION=1.11.1
   `https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip`
 - **OPA** integrity is enforced by downloading the `.sha256` alongside the binary and verifying with `sha256sum`.
 
----
+-----
 
 ### Why these versions & methods
 
@@ -64,7 +64,7 @@ ARG OPA_VERSION=1.11.1
 - **Azure CLI 2.81.0**: Pinned to a known PyPI build :  build deps installed only for the install and then removed.
 - **OPA 1.11.1 (static)**: Static AMD64 build avoids runtime symbol errors (e.g., `__res_init`) and shared-lib CVEs on Alpine.
 
----
+-----
 
 ### TLS / corporate CA wiring
 
@@ -78,14 +78,14 @@ GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt
 PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 ```
 
----
+-----
 
 ### Read-only runtime support (Env0-friendly)
 
 - `/tmp` is world-writable and `/var/tmp` is symlinked to `/tmp`, so tools with temp-file needs won’t fail in read-only root setups (like Env0).
 - The image drops privileges to non-root `65532:65532` at the end.
 
----
+-----
 
 ### Build & tag
 
@@ -99,7 +99,7 @@ docker push your-registry/env0-agent:latest-safe
 
 > Keep the **Env0 base tag** aligned with the Helm chart you deploy to avoid inheriting CVEs from upstream layers.
 
----
+-----
 
 ### Scanning tips (to keep CVEs near zero)
 
@@ -109,7 +109,7 @@ docker push your-registry/env0-agent:latest-safe
 - **Remove build dependencies** immediately after use (the Dockerfile does this for Azure CLI).
 - If a scanner flags **Go stdlib** inside upstream vendor binaries (e.g., the Env0 base or third-party CLIs), the true fix is an **upstream image update** :  swapping the base or the vendor binary version is your lever.
 
----
+-----
 
 ### Download
 
@@ -117,7 +117,7 @@ docker push your-registry/env0-agent:latest-safe
 - <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_STD.dockerfile)
 - <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Extended:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_EXT.dockerfile)
 
----
+-----
 
 ### Updating later
 
@@ -128,7 +128,7 @@ docker push your-registry/env0-agent:latest-safe
    - If it’s **upstream**, look for a newer vendor tag.
    - If it’s a **Python package**, pin/upgrade in the Dockerfile and rebuild.
 
----
+-----
 
 ### Troubleshooting
 
@@ -136,7 +136,7 @@ docker push your-registry/env0-agent:latest-safe
 - **OPA symbol errors** at runtime: the static AMD64 build is used specifically to avoid musl/glibc issues on Alpine.
 - **More CVEs after “adding tools”**: adding compilers or full toolchains (e.g., Go) can expand the surface significantly. Prefer single binaries unless the compiler is truly required at runtime.
 
----
+-----
 
 ### Changelog template 
 
@@ -153,7 +153,7 @@ Keep a `CHANGELOG.md` mapping your image tags (e.g., `v2.2.x`) to the exact comp
   - OPA 1.11.1 (static)
   - Notes: corporate CA wired :  read-only runtime safe :  build deps removed.
 ```
----
+-----
 
 - Long-Term Support Branch (a.k.a: LTSB) Image : Removes GO toolchain from installer and relies solely on the env0 agent build to handle all go / go post-processing
 - Standard Image                               : Includes GO toolchain like above, maintains safe stable and cleared version(s) of agents to reduce / eliminate vuls
