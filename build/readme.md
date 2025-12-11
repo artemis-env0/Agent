@@ -18,12 +18,12 @@ This README documents the **latest-safe** Env0 agent image variant. It pins each
 | **kubectl** | **v1.34.2** | Direct AMD64 binary from `dl.k8s.io` | Current stable line with recent fixes. |
 | **PowerShell** | **7.5.4** | Official GitHub release tarball | Only minimal Alpine libs added (`icu-libs`, etc.). |
 | **Google Cloud SDK** | **549.0.0** | Tarball extract only (no `install.sh`) | Avoids installer’s extra network calls & component churn. |
-| **AWS CLI v2** | **2.32.13** | Official bundled installer (zip) | Self-contained; avoids Python CVEs. |
-| **Azure CLI** | **2.81.0** | `pip` install with temporary build deps | Pinned; build deps removed post-install. |
+| **AWS CLI v2** | **2.32.13** | Official bundled installer (zip) | Self-contained :  avoids Python CVEs. |
+| **Azure CLI** | **2.81.0** | `pip` install with temporary build deps | Pinned :  build deps removed post-install. |
 | **OPA (Open Policy Agent)** | **1.11.1** | Static AMD64 binary + SHA256 verification | Static build avoids musl/glibc symbol issues. |
 | **Corporate CA trust** | N/A | Certs copied + env vars wired | Ensures outbound TLS via your internal CA. |
-| **Python deps** | Minimal | Targeted `pip` installs only | Smaller footprint; fewer CVEs. |
-| **Runtime layout** | N/A | `/tmp` writable; `/var/tmp` → `/tmp` | Works in read-only-root runtimes (Env0). |
+| **Python deps** | Minimal | Targeted `pip` installs only | Smaller footprint :  fewer CVEs. |
+| **Runtime layout** | N/A | `/tmp` writable :  `/var/tmp` → `/tmp` | Works in read-only-root runtimes (Env0). |
 
 ---
 
@@ -57,11 +57,11 @@ ARG OPA_VERSION=1.11.1
 
 ### Why these versions & methods
 
-- **kubectl v1.34.2**: Up-to-date stable; single binary keeps dependency surface tiny.
-- **PowerShell 7.5.4**: Latest requested; minimal runtime libs only.
+- **kubectl v1.34.2**: Latest stable :  single binary keeps dependency surface tiny.
+- **PowerShell 7.5.4**: Latest minimal runtime libs only.
 - **gcloud 549.0.0**: Extract-only (no `install.sh`), avoiding networked component pulls that often trigger SSL/CERT prompts and CVE noise.
 - **AWS CLI v2 2.32.13**: Self-contained bundle dramatically fewer Python CVEs than `awscli` from PyPI.
-- **Azure CLI 2.81.0**: Pinned to a known PyPI build; build deps installed only for the install and then removed.
+- **Azure CLI 2.81.0**: Pinned to a known PyPI build :  build deps installed only for the install and then removed.
 - **OPA 1.11.1 (static)**: Static AMD64 build avoids runtime symbol errors (e.g., `__res_init`) and shared-lib CVEs on Alpine.
 
 ---
@@ -107,7 +107,7 @@ docker push your-registry/env0-agent:latest-safe
 - **Pin versions** (as shown). Floating tags change under your feet and often introduce new CVEs.
 - Prefer **static/single-binary tools** (kubectl, OPA, AWS CLI v2) to avoid deep dependency trees.
 - **Remove build dependencies** immediately after use (the Dockerfile does this for Azure CLI).
-- If a scanner flags **Go stdlib** inside upstream vendor binaries (e.g., the Env0 base or third-party CLIs), the true fix is an **upstream image update**; swapping the base or the vendor binary version is your lever.
+- If a scanner flags **Go stdlib** inside upstream vendor binaries (e.g., the Env0 base or third-party CLIs), the true fix is an **upstream image update** :  swapping the base or the vendor binary version is your lever.
 
 ---
 
@@ -151,10 +151,10 @@ Keep a `CHANGELOG.md` mapping your image tags (e.g., `v2.2.x`) to the exact comp
   - AWS CLI v2 2.32.13
   - Azure CLI 2.81.0
   - OPA 1.11.1 (static)
-  - Notes: corporate CA wired; read-only runtime safe; build deps removed.
+  - Notes: corporate CA wired :  read-only runtime safe :  build deps removed.
 ```
 ---
 
 - Long-Term Support Branch (a.k.a: LTSB) Image : Removes GO toolchain from installer and relies solely on the env0 agent build to handle all go / go post-processing
-- Standard Image                               : Includes GO toolchain like above, preserves safe stable and cleared version(s) of agents to reduce / eliminate vuls
+- Standard Image                               : Includes GO toolchain like above, maintains safe stable and cleared version(s) of agents to reduce / eliminate vuls
 - Extended Image                               : Includes GO + Newest Realeases of all Runtimes, Agents, Libraries etc...
