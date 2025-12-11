@@ -1,5 +1,5 @@
 <h3 align="left">
-  <img width="480" height="480" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/>
+  <img width="400" height="400" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/>
 </h3>
 
 -----
