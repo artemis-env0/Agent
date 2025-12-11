@@ -1,13 +1,12 @@
-<h3 align="left">
-  <img width="600" height="128" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/01%20Main%20Logo/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/>
+<h3 align="center">
+  <img width="430" height="280" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/02%20Stacked%20Logo/Digital/SVG/envzero_payoff_fullcolor_rgb.svg"/>
 </h3>
 
 -----
-
 ## Env0 Agent Custom Dockerfile(s) Image (AMD64) :: Breakdown
+-----
 
-This README documents the **latest-safe** Env0 agent image variant. It pins each tool to specific versions and installs them with minimal dependencies to keep CaaS Hub / Aqua scans as close to zero as practicable.
-
+### This README documents the **latest safe** Env0 agent image variant. It pins each tool to specific versions and installs them with minimal dependencies to keep CaaS Hub / Aqua scans as close to zero as practicable.
 ----
 
 ### Contents (What’s in the image)
