@@ -1,8 +1,8 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.5L | Long-Term Support Branch
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.3.1L | Long-Term Support Branch
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
-#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34d
+#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.44
 #  |  Installs kubectl v1.34.2
 #  |  Installs pwsh 7.5.4
 #  |  Corporate CA trust wired
@@ -10,10 +10,10 @@
 #  |  AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
 #  |  Azure CLI pinned to 2.81.0
 #  |  OPA (Open Policy Agent) v1.11.0
-#  |  Vulnerability Patch v.2025.12.08
+#  |  Vulnerability Patch v.2025.12.11
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
-ARG AGENT_VERSION=4.0.34
+ARG AGENT_VERSION=4.0.44
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
 USER root
