@@ -1,4 +1,4 @@
-<h3 align="left">
+<h3 align="center">
   <img width="400" height="400" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/02%20Stacked%20Logo/Digital/SVG/envzero_payoff_fullcolor_rgb.svg"/>
 </h3>
 
