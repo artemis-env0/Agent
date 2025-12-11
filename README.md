@@ -39,11 +39,13 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ```
 ---
 
-Download Helm Installation Script v1208-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34c/deploy_env0_helm.sh) 
+Download Helm Installation Script v1208-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/deploy_env0_helm.sh) 
 
 ## env0 Agent - Dockerfile
 
-- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34c Master:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34c/env0_docker_img_master.dockerfile) 
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Long-Term Support Branch:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_LTSB.dockerfile)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Standard:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_STD.dockerfile)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download env0 S.H.A.G. Agent Dockerfile DF-v4.0.34d Extended:  [`env0_docker_img.dockerfile`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.34d/env0_docker_img_master_EXT.dockerfile)
 
 ## Values
 
@@ -68,4 +70,4 @@ helm uninstall env0-agent -n env0
 This chart is built to be lint-friendly and portable across Kubernetes 1.23+.
 
 ## Contributor
-artem@env0 | v1208-25
+artem@env0 | v1210-25
