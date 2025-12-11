@@ -1,17 +1,18 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.4
-#  - Based on env0/deployment-agent
-#      - linux/amd64 only
-#      - env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34c
-#  - Installs kubectl v1.34.2
-#  - Installs pwsh 7.5.4
-#  - Corporate CA trust wired
-#  - Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
-#  - AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
-#  - Azure CLI pinned to latest documented version
-#  - OPA (Open Policy Agent) v1.11.0
-#  - Vulnerability Patch v.2025.12.08
-# └────────────────────────────────────────────────────────────────────────────────────────────
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.2.6 (Canary | Latest) | Extended
+#  |  Based on env0/deployment-agent
+#      |  linux/amd64 only
+#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.34d
+#  |  Preserves your original flow
+#  |  Installs kubectl v1.34.2
+#  |  Installs pwsh 7.5.4
+#  |  Corporate CA trust wired
+#  |  Google Cloud SDK installed WITHOUT running install.sh (no network calls inside installer)
+#  |  AWS CLI v2.32.13 (replaces pip awscli to reduce Python CVEs)
+#  |  Azure CLI pinned to 2.81.0 per customer preference
+#  |  OPA (Open Policy Agent) v1.11.1 (static)
+#  |  Vulnerability Patch v.2025.12.10
+#  └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.34
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
@@ -25,7 +26,7 @@ COPY ariesinter.crt /usr/local/share/ca-certificates/
 COPY ariesroot.crt  /usr/local/share/ca-certificates/
 
 RUN set -eux; \
-    apk add --no-cache ca-certificates curl openssl py3-pip bash python3 unzip; \
+    apk add --no-cache ca-certificates curl openssl py3-pip bash python3; \
     update-ca-certificates; \
     cat /usr/local/share/ca-certificates/aries*.crt >> /etc/ssl/certs/ca-certificates.crt; \
     # Baseline OS security updates (addresses CVEs in Alpine userland where possible)
@@ -97,7 +98,7 @@ RUN set -eux; \
 # ─────────────────────────────────────────────────────────────────────────────
 # Google Cloud SDK (AMD64)
 # ─────────────────────────────────────────────────────────────────────────────
-ARG GCLOUD_VERSION=541.0.0
+ARG GCLOUD_VERSION=549.0.0
 RUN set -eux; \
     apk add --no-cache py3-crcmod; \
     curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
@@ -111,18 +112,21 @@ ENV PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
 # AWS CLI (switch to v2 to reduce Python dependency CVEs)
 # ─────────────────────────────────────────────────────────────────────────────
 # v2 is a bundled binary; requires glibc compatibility (gcompat/libc6-compat already installed)
+ARG AWSCLI_V2=2.32.13
 RUN set -eux; \
-    curl -fsSL -o /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
+    apk add --no-cache unzip; \
+    curl -fsSL -o /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_V2}.zip"; \
     unzip -q /tmp/awscliv2.zip -d /tmp; \
     /tmp/aws/install --update; \
     ln -sf /usr/local/bin/aws /usr/bin/aws || true; \
-    rm -rf /tmp/aws /tmp/awscliv2.zip
+    rm -rf /tmp/aws /tmp/awscliv2.zip; \
+    apk del unzip
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Azure CLI
 # ─────────────────────────────────────────────────────────────────────────────
-# Pin to latest documented release to pick up security fixes.
-ARG AZ_CLI_VERSION=2.91.0
+# Pin to requested release to avoid surprise dep churn.
+ARG AZ_CLI_VERSION=2.81.0
 RUN set -eux; \
     apk add --no-cache gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev; \
     pip3 install --upgrade --no-cache-dir pip setuptools wheel; \
@@ -138,7 +142,7 @@ RUN set -eux; \
 #  ----------------------------------------------------------------------------
 # | Open Policy Agent (OPA): pinned, checksum-verified (linux/amd64 only)
 #  ----------------------------------------------------------------------------
-ARG OPA_VERSION=1.11.0
+ARG OPA_VERSION=1.11.1
 USER root
 RUN arch="$(uname -m)"; \
     [ "$arch" = "x86_64" ] || { echo "OPA requires linux/amd64 (got $arch)"; exit 1; }; \
@@ -159,21 +163,17 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     TMPDIR=/var/tmp
 RUN set -eux; \
-    pip3 install --no-cache-dir --upgrade \
-      "pip>=25.3" "setuptools>=75.8.0" "wheel>=0.45.1" \
-      "requests>=2.32.3" "urllib3>=2.2.3" "idna>=3.7" "charset-normalizer>=3.3.2" "certifi>=2025.6.2" \
-      "pyyaml>=6.0.2" "cryptography>=43.0.3"; \
     pip3 install --no-cache-dir "checkov" "asteval==1.0.6"; \
     rm -rf /root/.cache /tmp/* /var/tmp/*
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Vulnerability remediation (CaaS Hub report)
-#   - cryptography: upgrade to address CVE-2024-12797
-#   - PyJWT: intentionally left as-is (disputed)
+#   - cryptography: upgrade to address recent OpenSSL binding CVEs
+#   - PyJWT: left as-is if your org is still disputing; otherwise pin a patched line here
 #   - coreutils (PyPI 0.9): force-remove if present to avoid legacy CVEs
 #   Notes:
-#     * Findings in the base agent or vendor CLIs that bundle their own libs
-#       may require upstream image bumps to remediate fully.
+#     * Findings in vendor CLIs (kubectl/OPA/AWS CLI/gcloud) reflect upstream binaries.
+#       We pin to releases that include the latest Go/Python fixes, and avoid bundling dev toolchains.
 # ─────────────────────────────────────────────────────────────────────────────
 RUN set -eux; \
     pip3 install --no-cache-dir --upgrade 'cryptography>=43.0.3'; \
