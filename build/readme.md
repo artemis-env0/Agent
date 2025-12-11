@@ -6,7 +6,6 @@
 ## Env0 Agent Custom Dockerfile(s) Image (AMD64) :: Breakdown
 
 This README documents the **latest-safe** Env0 agent image variant. It pins each tool to specific versions and installs them with minimal dependencies to keep CaaS Hub / Aqua scans as close to zero as practicable.
-
 ----
 
 ### Contents (What’s in the image)
