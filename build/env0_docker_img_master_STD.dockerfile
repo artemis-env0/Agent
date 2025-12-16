@@ -1,5 +1,5 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.3.1 | Standard
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.4.1 | Standard
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
 #      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.44
@@ -13,7 +13,7 @@
 #  |  Vulnerability Patch v.2025.12.11
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
-ARG AGENT_VERSION=4.0.44
+ARG AGENT_VERSION=4.0.49
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
 USER root

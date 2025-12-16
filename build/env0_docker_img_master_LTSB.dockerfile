@@ -1,8 +1,8 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.3.1L | Long-Term Support Branch
+#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.4.1L | Long-Term Support Branch
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
-#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.44
+#      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.49
 #  |  Installs kubectl v1.34.2
 #  |  Installs pwsh 7.5.4
 #  |  Corporate CA trust wired
@@ -13,7 +13,7 @@
 #  |  Vulnerability Patch v.2025.12.11
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
-ARG AGENT_VERSION=4.0.44
+ARG AGENT_VERSION=4.0.49
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
 USER root
