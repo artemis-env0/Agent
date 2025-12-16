@@ -75,4 +75,4 @@ helm uninstall env0-agent -n env0
 This chart is built to be lint-friendly and portable across Kubernetes 1.23+.
 
 ## Contributor
-artem@env0 | v1211-25
+artem@env0 | v1216-25
