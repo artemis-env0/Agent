@@ -43,7 +43,7 @@ kubectl -n env0 logs deploy/env0-agent-env0-agent -f
 ### env0 Helm Components
 
 - <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download Helm Installation Script v1211-25:  [`deploy_env0_helm`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.49/deploy_env0_helm.sh)
-- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download Helm-Chart for this Agent v1211-25: [`download env0_helm-chart`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.49/Helm_Chart_4-0-44.yaml)
+- <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download Helm-Chart for this Agent v1211-25: [`download env0_helm-chart`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.49/Helm_Chart_4-0-49.yaml)
 - <img width="16" height="16" alt="image" src="https://raw.githubusercontent.com/artemis-env0/Packages/refs/heads/main/Images/Logo%20Pack/03%20Logomark/Digital/SVG/envzero_logomark_fullcolor_rgb.svg"/> Download Template Package for this Agent v1211-25: [`download env0_templates-archive`](https://github.com/artemis-env0/Agent/releases/download/DF-4.0.49/Templates_Download_4.0.49.zip)
 
 ### env0 Agent : Dockerfile
