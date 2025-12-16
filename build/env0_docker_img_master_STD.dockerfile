@@ -13,7 +13,7 @@
 #  |  Vulnerability Patch v.2025.12.11
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
-ARG AGENT_VERSION=4.0.44
+ARG AGENT_VERSION=4.0.49
 FROM ghcr.io/env0/deployment-agent:${AGENT_VERSION}
 
 USER root
