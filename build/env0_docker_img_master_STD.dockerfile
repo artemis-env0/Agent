@@ -10,7 +10,7 @@
 #  |  AWS CLI v2 (replaces pip awscli to reduce Python CVEs)
 #  |  Azure CLI pinned to latest documented version
 #  |  OPA (Open Policy Agent) v1.10.1
-#  |  Vulnerability Patch v.2025.12.11
+#  |  Vulnerability Patch v.2025.12.11 (v2: Resolved Curl Includes Trancate Fix) 
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.49
@@ -100,8 +100,14 @@ RUN set -eux; \
 ARG GCLOUD_VERSION=534.0.0
 RUN set -eux; \
     apk add --no-cache py3-crcmod; \
-    curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
-      | tar -xz -C /usr/local; \
+    GCLOUD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz"; \
+    GCLOUD_TGZ="/tmp/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tgz"; \
+    for attempt in 1 2 3 4 5; do \
+      curl -fSL --connect-timeout 20 --max-time 600 --retry 5 --retry-delay 3 --retry-connrefused -o "${GCLOUD_TGZ}" "${GCLOUD_URL}" && \
+      gzip -t "${GCLOUD_TGZ}" && break || { echo "gcloud download attempt ${attempt} failed, retrying..."; sleep 3; }; \
+    done; \
+    tar -xzf "${GCLOUD_TGZ}" -C /usr/local; \
+    rm -f "${GCLOUD_TGZ}"; \
     ln -sf /usr/local/google-cloud-sdk/bin/gcloud /usr/bin/gcloud; \
     gcloud config set --quiet component_manager/disable_update_check true ; \
     gcloud config set --quiet core/custom_ca_certs_file "/etc/ssl/certs/ca-certificates.crt"
