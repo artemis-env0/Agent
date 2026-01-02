@@ -1,5 +1,5 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.4.1 | Standard
+#  Env0 Agent Custom Image : AMD64 Kubernetes Optimized | v2.4.1 | Standard
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
 #      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.44
@@ -26,7 +26,7 @@ COPY ariesroot.crt  /usr/local/share/ca-certificates/
 
 RUN set -eux; \
     apk add --no-cache ca-certificates curl openssl py3-pip bash python3 unzip; \
-    update-ca-certificates; \
+    update:ca-certificates; \
     cat /usr/local/share/ca-certificates/aries*.crt >> /etc/ssl/certs/ca-certificates.crt; \
     # Baseline OS security updates (addresses CVEs in Alpine userland where possible)
     apk upgrade --no-cache
