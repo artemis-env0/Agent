@@ -1,5 +1,5 @@
 #  ────────────────────────────────────────────────────────────────────────────────────────────
-#  Env0 Agent Custom Image - AMD64 Kubernetes Optimized | v2.4.2 (Canary | Latest) | Extended
+#  Env0 Agent Custom Image : AMD64 Kubernetes Optimized | v2.4.2 (Canary | Latest) | Extended
 #  |  Based on env0/deployment-agent
 #      |  linux/amd64 only
 #      |  env0 Custom Agent for (x86-64) | artem@env0 | v4.0.49
@@ -11,7 +11,7 @@
 #  |  AWS CLI v2.32.13 (replaces pip awscli to reduce Python CVEs)
 #  |  Azure CLI pinned to 2.81.0 per customer preference
 #  |  OPA (Open Policy Agent) v1.11.1 (static)
-#  |  Vulnerability Patch v.2025.12.10
+#  |  Vulnerability Patch v.2025.12.10 (v2 : Resolved Truncated Curl Error)
 #  └────────────────────────────────────────────────────────────────────────────────────────────
 
 ARG AGENT_VERSION=4.0.49
@@ -101,8 +101,21 @@ RUN set -eux; \
 ARG GCLOUD_VERSION=549.0.0
 RUN set -eux; \
     apk add --no-cache py3-crcmod; \
-    curl -sSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" \
-      | tar -xz -C /usr/local; \
+    GCLOUD_TGZ="/tmp/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz"; \
+    GCLOUD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz"; \
+    for i in 1 2 3; do \
+      curl -fSL --retry 5 --retry-connrefused --connect-timeout 15 --max-time 600 --continue-at - -o "${GCLOUD_TGZ}" "${GCLOUD_URL}" && \
+      tar -tzf "${GCLOUD_TGZ}" >/dev/null 2>&1 && break || { echo "gcloud archive attempt $i failed or is corrupt. retrying..."; rm -f "${GCLOUD_TGZ}"; sleep 3; }; \
+    done; \
+    [ -f "${GCLOUD_TGZ}" ] || { echo "failed to download Google Cloud SDK after retries"; exit 1; }; \
+    if curl -fsSL --connect-timeout 10 --max-time 60 -o "${GCLOUD_TGZ}.sha256" "${GCLOUD_URL}.sha256"; then \
+      if [ -s "${GCLOUD_TGZ}.sha256" ]; then \
+        awk '{print $1"  '"${GCLOUD_TGZ}"'"}' "${GCLOUD_TGZ}.sha256" > "${GCLOUD_TGZ}.sha256.chk"; \
+        sha256sum -c "${GCLOUD_TGZ}.sha256.chk"; \
+      fi; \
+    fi; \
+    tar -xzf "${GCLOUD_TGZ}" -C /usr/local; \
+    rm -f "${GCLOUD_TGZ}" "${GCLOUD_TGZ}.sha256" "${GCLOUD_TGZ}.sha256.chk" || true; \
     ln -sf /usr/local/google-cloud-sdk/bin/gcloud /usr/bin/gcloud; \
     gcloud config set --quiet component_manager/disable_update_check true ; \
     gcloud config set --quiet core/custom_ca_certs_file "/etc/ssl/certs/ca-certificates.crt"
